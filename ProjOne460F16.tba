@@ -1,0 +1,56 @@
+; enter following command line to generate simulation and list files
+
+; python tramelblaze.py ProjectOne460F16.tba
+
+; demo program written for tramel blaze assembler
+; 21 february 2016
+; john tramel cecs 460
+
+; This code supports ProjectOne_blaze
+; Project worked with counter - now include processor
+
+; declare constants for coding
+
+ZEROS		EQU  0000
+ONE		EQU  0001
+COUNTER         EQU  R9
+
+START		ENINT
+
+; initialize R0 to 0
+; initialize R9 to 0 - equated to COUNTER
+
+     		LOAD COUNTER, ZEROS
+                LOAD R0, ZEROS
+
+; main loop incrementing R0
+
+FIRST		ADD  R0, ONE
+		JUMP FIRST
+
+; address for interrupt service routine
+
+		ADDRESS 0300
+
+; set up for loop in isr
+
+ISR		
+   		INPUT RA, 1234
+		AND  RA, 0001
+                JUMPZ DECREMENT
+		ADD  R9, ONE
+                OUTPUT R9, 1234
+                RETEN
+
+DECREMENT       SUB  R9, ONE
+                OUTPUT R9, 1234
+		RETEN
+
+; ISR vectored through 03FE
+
+		ADDRESS 0FFE
+
+ENDIT		JUMP ISR
+
+		END
+
